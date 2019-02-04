@@ -44,7 +44,7 @@ def transbreak(cipherfile, dictfile):
             if score > best:
                 best = score
                 best_index = index
-                print("best so far keylen: {} score: {}".format(index+1, score))
+                print("[new best]keylen: {} score: {}".format(index+1, score))
             if index and index % 100 == 0:
                 print("{:.01f}% {}/{}".format(index/len(cipher)*100, index, len(cipher)))
     except KeyboardInterrupt:
@@ -71,7 +71,7 @@ if __name__ == "__main__":
                 print("all cipher lengths equally terrible")
             else:
                 #print(decrypt_message(index, open(sys.argv[2], "r").read()))
-                print("best cipher length {}".format(index))
+                print("[best overall] keylen: {} score: {}".format(index, best))
     else:
         print("usage ./transbreak.py encrypt <key> /path/to/input /path/to/output")
         print("usage ./transbreak.py decrypt <key> /path/to/input /path/to/output")
