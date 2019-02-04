@@ -29,13 +29,24 @@ def decrypt_message(key, message):
 
 def trykey(key):
     #score the key by counting all matching words over 5 characters long
-    return sum(1 for word in decrypt_message(key, cipher).split() if len(word) >= 5 and word in words)
+    return sum(1 for word in decrypt_message(key, cipher).split(None, wordcount) if len(word) > 4 and len(word) < maxlen and word in words)
 
 def transbreak(cipherfile, dictfile):
     global cipher
     global words
+    global wordcount
+    global maxlen
+
     cipher = open(cipherfile).read()
     words = open(dictfile).read().split()
+    maxlen = max(len(word) for word in words)
+    print("4 < word length < {}".format(maxlen))
+    #if we have a lot of cipher text dont bother checking every word
+    if len(cipher) > 1000:
+        wordcount = int(len(cipher)/100)
+        print("checking {} words per decrypt".format(wordcount))
+    else:
+        wordcount = -1
     try:
         listing = Pool().imap(trykey, range(1,len(cipher)))
         best = 0
@@ -44,7 +55,7 @@ def transbreak(cipherfile, dictfile):
             if score > best:
                 best = score
                 best_index = index
-                print("[new best]keylen: {} score: {}".format(index+1, score))
+                print("[new best] keylen: {} score: {}".format(index+1, score))
             if index and index % 100 == 0:
                 print("{:.01f}% {}/{}".format(index/len(cipher)*100, index, len(cipher)))
     except KeyboardInterrupt:
@@ -70,7 +81,6 @@ if __name__ == "__main__":
             if index == -1:
                 print("all cipher lengths equally terrible")
             else:
-                #print(decrypt_message(index, open(sys.argv[2], "r").read()))
                 print("[best overall] keylen: {} score: {}".format(index, best))
     else:
         print("usage ./transbreak.py encrypt <key> /path/to/input /path/to/output")
