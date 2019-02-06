@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
-
 import sys, string, itertools, math
 from multiprocessing import Pool
+"""
+author: Isaac Morneau
+date: Feb 01, 2019
+content:
+    encrypt_message - takes in a key and message returning the ciphertext
+    decrypt_message - takes in a key and message returning the plaintext
+    transbreak - takes in a ciphertext and dictionary and brute forces the key
+"""
 
 def encrypt_message(key, message):
     ciphertext = [''] * key
